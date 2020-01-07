@@ -3,6 +3,7 @@
 rosrun baxter_tools enable_robot.py -e ;
 sleep 2
 cd src/run_scripts/src && python move_to_init.py &
+
 # roslaunch openni2_launch openni2.launch &
 # sleep 15
 python src/run_scripts/src/broadcast_transform.py &
