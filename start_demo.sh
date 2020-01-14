@@ -11,3 +11,6 @@ python src/run_scripts/src/broadcast_transform.py &
 source /home/bill/ork_ws/devel/setup.bash;
 rosrun object_recognition_core detection -c `rospack find object_recognition_tabletop`/conf/detection.table.ros.ork &
 python src/run_scripts/src/object_pose.py
+
+roslaunch baxter_moveit_config baxter_grippers.launch
+rosrun baxter_interface joint_trajectory_action_server.py

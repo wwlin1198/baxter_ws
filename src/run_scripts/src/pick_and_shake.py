@@ -110,7 +110,7 @@ class Pick_and_shake:
 
 
 	def __init__(self):
-		print('starting ros')
+		# print('starting ros')
 		rospy.init_node('pick_n_shake', disable_signals=True)
 		self.place = 0
 		self.baxter_enabler = baxter.RobotEnable(versioned=True)
@@ -120,7 +120,7 @@ class Pick_and_shake:
 		self.right_arm = baxter.Limb('right')
 		self.lGripper = baxter.Gripper('left')
 		self.rGripper = baxter.Gripper('right')
-		# '''
+		'''
 		#calibrating gripper
 		if not self.lGripper.calibrate():
 		    print("left gripper did not calibrate")
@@ -128,7 +128,7 @@ class Pick_and_shake:
 		if not self.rGripper.calibrate():
 		    print("right gripper did not calibrate")
 		    sys.exit()
-		# '''
+		
 		self.lGripper.set_holding_force(50)
 		self.lGripper.set_moving_force(30)
 
@@ -156,9 +156,9 @@ class Pick_and_shake:
 		time.sleep(3)
 		print self.lGripper.force()
 		# self.move_to_sleep()
+		'''
 		
-		
-		# print self.left_arm.endpoint_pose()
+		print self.left_arm.joint_angles()
 		
 		
 		rospy.spin()
