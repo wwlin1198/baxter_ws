@@ -1,0 +1,10 @@
+accelerometer:
+/robot/accelerometer/left_accelerometer/state
+
+
+endpoint state:
+/robot/limb/left/endpoint_state
+
+
+joint angles:
+/robot/joint_states
