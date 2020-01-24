@@ -15,6 +15,12 @@ import cv2
 import json
 from rospy_message_converter import message_converter as mc 
 import sys
+import os
+import copy
+import Queue as queue
+import thread
+import sounddevice as sd
+import soundfile as sf
 
 
 
@@ -22,7 +28,7 @@ class Sensory_data_collection:
     def __init__(self,object_name):
         rospy.init_node('pnp', anonymous=True)
         rospy.Subscriber('/joy', Joy, self.joycallback)
-        
+        print('starting...')
 
         self.calibrated = False
 
@@ -92,6 +98,15 @@ class Sensory_data_collection:
 
         self.object_name = object_name
 
+        if not os.path.exists(os.path.dirname(self.object_name)):
+            try:
+                os.mkdir(self.object_name)
+            except OSError as exc:
+                pass
+
+        self.q = queue.Queue()
+        self.should_record = False
+
         rospy.spin()
 
 
@@ -101,30 +116,70 @@ class Sensory_data_collection:
             arm = 'left'
             self.keep_saving = True
             self.capture_image('lift', self.object_name)
+            self.start_recording_audio('lift', self.object_name)
             self.lift(arm)
+            self.stop_recording_audio()
             self.save_data('lift', self.object_name)
 
         elif data.buttons[1] == 1:#B
             arm = 'left'
             self.keep_saving = True
             self.capture_image('push', self.object_name)
+            self.start_recording_audio('push', self.object_name)
             self.push(arm)
+            self.stop_recording_audio()
             self.save_data('push', self.object_name)
 
         elif data.buttons[4] == 1:#Y
             arm = 'left'
             self.keep_saving = True
             self.capture_image('drop', self.object_name)
+            self.start_recording_audio('drop', self.object_name)
             self.drop(arm)
+            self.stop_recording_audio()
             self.save_data('drop', self.object_name)
 
         elif data.buttons[0] == 1:#A
             arm = 'left'
             self.keep_saving = True
             self.capture_image('shake', self.object_name)
+            self.start_recording_audio('shake', self.object_name)
             self.shake(arm)
+            self.stop_recording_audio()
             self.save_data('shake', self.object_name)
-            
+    
+
+    def record_callback(self, indata, frames, time, status):
+        self.q.put(indata.copy())
+ 
+
+    def start_recording_audio(self, action, object_name):
+        self.should_record = True
+        thread.start_new_thread(self.record_audio, (action, object_name))
+
+    def stop_recording_audio(self):
+        self.should_record = False
+
+    def record_audio(self, action, object_name):
+        try:
+            name = object_name+'/audio_'+object_name+'_'+action+'.wav'
+            with sf.SoundFile(name, mode='x', samplerate=48000,
+                              channels=1) as file:
+                with sd.InputStream(samplerate=48000, 
+                                    channels=1, callback=self.record_callback):
+                    print('#' * 80)
+                    print('recording audio...')
+                    print('#' * 80)
+                    while self.should_record:
+                        file.write(self.q.get())
+                    self.q = queue.Queue()
+
+                    
+        except KeyboardInterrupt:
+            print('\nRecording finished: ' + repr('test.wav'))
+            parser.exit(0)
+        except Exception as e:
+            print(e)
 
 
     def push(self, arm):
@@ -264,7 +319,7 @@ class Sensory_data_collection:
         shape = img.shape
         img = img[130:shape[0]-230, 330:shape[1]-200]#y,x
 
-        name = 'data/'+'image_'+object_name+'_'+action+'.png'
+        name = object_name+'/'+'image_'+object_name+'_'+action+'.png'
         if cv2.imwrite(name, img):
             print('Image saved')
         else:
@@ -273,22 +328,25 @@ class Sensory_data_collection:
 
     def save_data(self, action, object_name):
         self.keep_saving = False
-        accel_name = "data/accel_"+object_name+'_'+action+'.json'
-        endpoint_name = "data/endstate_"+object_name+'_'+action+'.json'
-        joint_name = "data/jointstate_"+object_name+'_'+action+'.json'
+        accel_name = object_name+"/accel_"+object_name+'_'+action+'.json'
+        endpoint_name = object_name+"/endstate_"+object_name+'_'+action+'.json'
+        joint_name = object_name+"/jointstate_"+object_name+'_'+action+'.json'
         
         with open(accel_name, "w") as accel_file:
-            json.dump(self.current_accelerometer, accel_file, indent=4)
+            d = copy.deepcopy(self.current_accelerometer)
+            json.dump(d, accel_file, indent=4)
         self.current_accelerometer = {}
         self.accel_counter=0
 
         with open(endpoint_name, "w") as endpoint_file: 
-            json.dump(self.current_endpointstate, endpoint_file, indent=4)
+            e = copy.deepcopy(self.current_endpointstate)
+            json.dump(e, endpoint_file, indent=4)
         self.current_endpointstate = {}
         self.endpoint_counter=0
 
         with open(joint_name, "w") as joint_file:
-            json.dump(self.current_jointstate, joint_file, indent=4)
+            j = copy.deepcopy(self.current_jointstate)
+            json.dump(j, joint_file, indent=4)
         self.current_jointstate = {}
         self.joint_counter=0
 
