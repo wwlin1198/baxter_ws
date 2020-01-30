@@ -157,7 +157,8 @@ class Pick_and_shake:
 		print self.lGripper.force()
 		# self.move_to_sleep()
 		'''
-		
+		# self.pause_event = Event()
+		# left_arm_follow_trajectory('waypoints/lift.wp', self.left_arm, self.pause_event)
 		print self.left_arm.joint_angles()
 		
 		
