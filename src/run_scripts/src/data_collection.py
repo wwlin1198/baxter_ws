@@ -3,9 +3,7 @@
 import rospy
 import roslib; roslib.load_manifest("moveit_python")
 from moveit_python import PlanningSceneInterface, MoveGroupInterface
-from geometry_msgs.msg import PoseStamped, PoseArray
 import baxter_interface
-from moveit_python.geometry import rotate_pose_msg_by_euler_angles
 from math import pi, sqrt
 from operator import itemgetter
 from sensor_msgs.msg import Joy, Imu, JointState, Image
@@ -129,7 +127,7 @@ class Sensory_data_collection:
         self.shake(arm)
         self.drop(arm)
         self.push(arm)
-        rospy.sleep(10)
+        rospy.sleep(6)
         self.poke(arm)
         self.both_arms_group.moveToJointPosition(self.both_arm_joints, self.init_joint_angles, plan_only=False) 
 

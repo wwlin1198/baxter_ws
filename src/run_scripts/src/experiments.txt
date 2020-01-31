@@ -1,0 +1,67 @@
+
+
+
+
+3
+
+
+
+
+
+
+
+4
+
+
+
+
+
+
+
+5
+python data_collection.py purple_15g 5
+python data_collection.py orange_20g 5
+python data_collection.py blue_60g 5
+python data_collection.py green_80g 5
+python data_collection.py wine_100g 5
+python data_collection.py celsius_120g 5
+
+6
+python data_collection.py purple_15g 6
+python data_collection.py orange_20g 6
+python data_collection.py blue_60g 6
+python data_collection.py green_80g 6
+python data_collection.py wine_100g 6
+python data_collection.py celsius_120g 6
+
+7
+python data_collection.py purple_15g 7
+python data_collection.py orange_20g 7
+python data_collection.py blue_60g 7
+python data_collection.py green_80g 7
+python data_collection.py wine_100g 7
+python data_collection.py celsius_120g 7
+
+8
+python data_collection.py purple_15g 8
+python data_collection.py orange_20g 8
+python data_collection.py blue_60g 8
+python data_collection.py green_80g 8
+python data_collection.py wine_100g 8
+python data_collection.py celsius_120g 8
+
+9
+python data_collection.py purple_15g 9
+python data_collection.py orange_20g 9
+python data_collection.py blue_60g 9
+python data_collection.py green_80g 9
+python data_collection.py wine_100g 9
+python data_collection.py celsius_120g 9
+
+10
+python data_collection.py purple_15g
+python data_collection.py orange_20g
+python data_collection.py blue_60g
+python data_collection.py green_80g
+python data_collection.py wine_100g
+python data_collection.py celsius_120g
