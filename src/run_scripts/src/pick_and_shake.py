@@ -37,7 +37,7 @@ class Pick_and_shake:
 		return pose
 
 
-	def transform_object_pose_to_robot_rf(self, object_pose):
+	def transform_object_pose_to_robot_rf(self):
 		#kinect camera axis not the same as the robot axis so we could have
 		#to perform the necessary transforms first to get both axes aligned
 		#and then to transform camera rf to robot's rf
@@ -48,9 +48,14 @@ class Pick_and_shake:
 
 		transform = tf_buffer.lookup_transform('base', 'camera_rgb_optical_frame',rospy.Time(0),
 			rospy.Duration(1.0))
-		trans_pose = tf2_geometry_msgs.do_transform_pose(object_pose, transform)
+		print transform 
+		print "----------------" 
+		rot = transform.transform.rotation
+		print tf.transformations.euler_from_quaternion((rot.x,rot.y,rot.z,rot.w))
 
-		return trans_pose
+		# trans_pose = tf2_geometry_msgs.do_transform_pose(object_pose, transform)
+
+		# return trans_pose
 
 
 	def grasp_object(self, arm):
@@ -120,6 +125,8 @@ class Pick_and_shake:
 		self.right_arm = baxter.Limb('right')
 		self.lGripper = baxter.Gripper('left')
 		self.rGripper = baxter.Gripper('right')
+		time.sleep(3)
+		self.transform_object_pose_to_robot_rf()
 		'''
 		#calibrating gripper
 		if not self.lGripper.calibrate():
@@ -159,7 +166,7 @@ class Pick_and_shake:
 		'''
 		# self.pause_event = Event()
 		# left_arm_follow_trajectory('waypoints/lift.wp', self.left_arm, self.pause_event)
-		print self.left_arm.joint_angles()
+		# print self.left_arm.joint_angles()
 		
 		
 		rospy.spin()

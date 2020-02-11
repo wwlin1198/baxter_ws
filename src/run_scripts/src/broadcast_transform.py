@@ -16,14 +16,14 @@ def broadcast_camera_transform():
 
 	while not rospy.is_shutdown(): 
 		static_transformStamped.header.stamp = rospy.Time.now()
-		static_transformStamped.header.frame_id = "head_camera"
+		static_transformStamped.header.frame_id = 'head'
 		static_transformStamped.child_frame_id = 'camera_link'
 
-		static_transformStamped.transform.translation.y = 0.06#0.0
-		static_transformStamped.transform.translation.x = 0#-0.07
-		static_transformStamped.transform.translation.z = 0#0.16
+		static_transformStamped.transform.translation.x = 0.12839
+		static_transformStamped.transform.translation.y = 0
+		static_transformStamped.transform.translation.z = 0.12368
 
-		quat = tf.transformations.quaternion_from_euler(-1.57,-1.57,0)#-1.57,-1.57)
+		quat = tf.transformations.quaternion_from_euler(0,1.32,0)
 		static_transformStamped.transform.rotation.x = quat[0]
 		static_transformStamped.transform.rotation.y = quat[1]
 		static_transformStamped.transform.rotation.z = quat[2]
